@@ -1,6 +1,6 @@
-import { updateEmployees, updateLogs } from '../../store/actions'
-import store from '../../store/store'
-import { employeesWorker, sprintsWorker } from '../workers/workers'
+import { employeesWorker, sprintsWorker } from '../logic/workers/workers'
+import { updateEmployees, updateLogs } from '../store/actions'
+import store from '../store/store'
 
 employeesWorker.postMessage({ message: 'initEmployees' })
 

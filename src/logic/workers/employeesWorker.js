@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 
-import { excludeEmployeeWorker, getRandomInt } from '../helpers/helpers'
+import { excludeEmployeeWorker, getRandomInt, redistributeRoles, terminateWorkers } from '../helpers/helpers'
 
 let employees = []
 let sprint
@@ -15,52 +15,9 @@ const taskQueues = {
   QA: [],
 }
 
-const redistributeRoles = () => {
-  const count = employees.length
-
-  if (count >= 5) {
-    employees.forEach((emp, i) => {
-      emp.role = [roles[i % roles.length]]
-    })
-    return
-  }
-
-  switch (count) {
-    case 4:
-      employees[0].role = ['БА']
-      employees[1].role = ['СА']
-      employees[2].role = ['TL', 'DV']
-      employees[3].role = ['QA']
-      break
-    case 3:
-      employees[0].role = ['БА', 'СА']
-      employees[1].role = ['TL', 'DV']
-      employees[2].role = ['QA']
-      break
-    case 2:
-      employees[0].role = ['БА', 'СА']
-      employees[1].role = ['TL', 'DV', 'QA']
-      break
-    case 1:
-      employees[0].role = ['БА', 'СА', 'TL', 'DV', 'QA']
-      break
-    default:
-      break
-  }
-}
-
 export const createWorker = () => {
   const worker = new Worker(new URL('./taskWorker.js', import.meta.url), { type: 'module' })
   return worker
-}
-
-const terminateWorkers = (emps) => {
-  emps.forEach((employee) => {
-    if (employee.worker) {
-      employee.worker.terminate()
-      employee.worker = null
-    }
-  })
 }
 
 const findEmployee = (role, task) => {
@@ -269,7 +226,7 @@ const handleTaskCompletion = (employee, task) => {
 
   if (employee.role.includes('QA') && isSprintDone()) {
     sprint.status = 'Done'
-    terminateWorkers(employees)
+    employees = terminateWorkers(employees)
     self.postMessage({ message: 'updateEmployees', employees: employees })
     self.postMessage({ message: 'sprintDone', sprint: sprint })
     self.postMessage({
@@ -299,7 +256,7 @@ self.onmessage = (e) => {
         completedActivities: [],
         worker: null,
       }))
-      redistributeRoles()
+      employees = redistributeRoles(employees, roles)
       self.postMessage({ message: 'updateEmployees', employees: employees })
       break
     }
@@ -309,7 +266,9 @@ self.onmessage = (e) => {
         employee.worker.terminate()
       }
       employees = employees.filter((emp) => emp.id !== e.data.id)
-      if (employees.length <= 5) redistributeRoles()
+      if (employees.length <= 5) {
+        employees = redistributeRoles(employees, roles)
+      }
       self.postMessage({ message: 'updateEmployees', employees: excludeEmployeeWorker(employees) })
       break
     }
@@ -323,7 +282,8 @@ self.onmessage = (e) => {
         completedActivities: [],
         worker: null,
       }
-      if (sprint.status === 'In Progress') {
+
+      if (sprint && sprint.status === 'In Progress') {
         const worker = createWorker()
         newEmployee.worker = worker
         worker.onmessage = (e) => {
@@ -338,7 +298,7 @@ self.onmessage = (e) => {
       }
 
       employees = [...employees, newEmployee]
-      redistributeRoles()
+      employees = redistributeRoles(employees, roles)
       self.postMessage({ message: 'updateEmployees', employees: excludeEmployeeWorker(employees) })
       break
     }

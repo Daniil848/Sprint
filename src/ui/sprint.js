@@ -1,6 +1,6 @@
-import { updateSprints } from '../../store/actions'
-import store from '../../store/store'
-import { employeesWorker, sprintsWorker } from '../workers/workers'
+import { employeesWorker, sprintsWorker } from '../logic/workers/workers'
+import { updateSprints } from '../store/actions'
+import store from '../store/store'
 
 sprintsWorker.onmessage = (e) => {
   if (e.data.message === 'updateSprints') {
@@ -47,8 +47,14 @@ const renderSprints = () => {
     sprintList.appendChild(li)
 
     const deleteSprintButton = li.querySelector('.delete-sprint-btn')
+    const updateEmployeesButton = document.querySelector('.update_employess')
     if (sprint.status !== 'To Do') {
       deleteSprintButton.disabled = true
+    }
+    if (sprint.status === 'In Progress') {
+      updateEmployeesButton.disabled = true
+    } else {
+      updateEmployeesButton.disabled = false
     }
     deleteSprintButton.addEventListener('click', () => {
       sprintsWorker.postMessage({ message: 'deleteSprint', id: sprint.id })
