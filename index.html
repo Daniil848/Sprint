@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo-sm.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Practice</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root">
+      <header>
+        <div class="header__start">
+          <img src="/logo-sm.png" alt="CodeInside" width="100" />
+          <h1></h1>
+        </div>
+        <div class="header__end">
+          <small lang="en">*info*</small>
+          <img src="./src/assets/Никки.png" alt="Character" width="100" tabindex="0" />
+          <div class="about">
+            <div class="about__content">
+              <small>См. детали в TODO.md</small>
+            </div>
+          </div>
+        </div>
+      </header>
+      <aside class="logs_bar"><ul class="logs_list"></ul></aside>
+      <main>
+        <div class="sprints">
+          <ul class="sprints__list"></ul>
+        </div>
+        <div class="employees">
+          <label>Число сотрудников: <input type="number" class="employees_quantity" /></label>
+          <label>Величина T (с): <input type="number" class="global_time" /></label>
+          <button class="update_employess">Обновить</button>
+          <ul class="employees__list"></ul>
+        </div>
+      </main>
+    </div>
+
+    <script type="text/javascript">
+      const ABOUT = {
+        theme: 'Web Workers',
+        name: 'Делегируй-пожинай',
+        description: `
+          Как пасти котов? Легко!
+          С помощью новой навороченной программы для управления персоналом 2КИС ваши поручения исполняются быстро и эффективно.
+
+          В задании погрузимся в тонкости параллельного исполнения команд, смоделировав работу офиса мягколапых.
+        `.split(/\r?\n\s*\r?\n/),
+      }
+
+      document.title = `${document.title}: ${ABOUT.name}`
+
+      const header = document.getElementsByTagName('header')[0]
+
+      const themeHeader = header.getElementsByTagName('h1')[0]
+      themeHeader.innerText = ABOUT.theme
+
+      const nameParagraph = document.createElement('p')
+      nameParagraph.textContent = ABOUT.name
+      const descriptionParagraphsList = ABOUT.description.map((p) => {
+        const element = document.createElement('p')
+        element.innerText = p
+        return element
+      })
+      const aboutSectionContent = header.querySelector('.about__content')
+      aboutSectionContent.prepend(nameParagraph, ...descriptionParagraphsList)
+    </script>
+    <script type="module" src="./src/index.js"></script>
+    <script type="module" src="./src/logic/Employee/employees.js"></script>
+    <script type="module" src="./src/logic/Sprint/sprint.js"></script>
+    <script type="module" src="./src/logic/Log/log.js"></script>
+    <script type="module" src="./src/logic/helpers/helpers.js"></script>
+  </body>
+</html>

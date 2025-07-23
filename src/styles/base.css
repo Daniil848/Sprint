@@ -1,0 +1,127 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  font-size: max(calc(100vw / 1920), calc(100vh / 1080));
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  height: 100vh;
+}
+
+body *::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+body *::-webkit-scrollbar-track {
+  background: #2b2b2b;
+}
+body *::-webkit-scrollbar-thumb {
+  background: #555;
+}
+body *::-webkit-scrollbar-thumb:hover {
+  background: #1c43f380;
+}
+
+#root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  color: var(--color-light);
+  background-color: var(--color-dark);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16rem;
+
+  --color-dark: #000;
+  --color-light: #fff;
+  --color-gray: #b7b7b7;
+  --color-primary: #ffcd00;
+  --color-sprint: #28b463;
+}
+
+header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 15rem;
+  padding: 10rem 20rem 15rem;
+  border-bottom: 0.35rem solid color-mix(in srgb, var(--color-primary) 70%, transparent);
+  height: 115px;
+
+  z-index: 500;
+}
+
+.header__start {
+  display: flex;
+  align-items: center;
+  gap: 15rem;
+}
+
+.header__end {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 15rem;
+}
+
+small {
+  color: var(--color-gray);
+  font-size: 14rem;
+}
+
+.header__end:hover .about,
+.header__end img:focus + .about {
+  opacity: 1;
+  pointer-events: all;
+}
+.about {
+  position: absolute;
+  top: 100%;
+  right: -1rem;
+  width: 350rem;
+  padding-top: 16rem;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease-in;
+}
+.about__content {
+  display: flex;
+  flex-direction: column;
+  gap: 10rem;
+  padding: 10rem 10rem 5rem;
+  background-color: var(--color-dark);
+}
+.about__content p:first-of-type {
+  font-weight: bold;
+}
+.about__content p {
+  white-space: pre-line;
+}
+
+h1 {
+  display: flex;
+  align-items: center;
+  gap: 10rem;
+  font-size: 23rem;
+  font-weight: bold;
+}
+h1 b {
+  font-size: 49rem;
+}
+
+main {
+  flex: 1 1 auto;
+  height: 0;
+  position: relative;
+  padding: 15rem 20rem 5rem;
+  overflow: auto;
+}
+
+button {
+  cursor: pointer;
+}

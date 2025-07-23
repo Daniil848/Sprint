@@ -1,0 +1,38 @@
+{
+  "name": "@ci-hp/practice-javascript",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev:browser": "vite",
+    "dev:node": "vite-node --watch src/index.js",
+    "test:browser": "vitest --config=vitest.app.config.js",
+    "test:node": "vitest --config=vitest.node.config.js",
+    "lint": "eslint . --cache",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "eslint": "^9.18.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "globals": "^15.14.0",
+    "husky": "^9.1.6",
+    "jsdom": "^25.0.1",
+    "prettier": "^3.3.3",
+    "vite": "^6.0.5",
+    "vite-node": "^2.1.8",
+    "vitest": "^2.1.8"
+  },
+  "lint-staged": {
+    "*.{js}": "eslint --cache --fix",
+    "*.{js,css,md}": "prettier --write"
+  },
+  "dependencies": {
+    "redux": "^4.1.2",
+    "uuid": "^11.0.5"
+  }
+}
