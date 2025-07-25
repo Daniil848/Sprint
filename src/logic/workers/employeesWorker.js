@@ -21,7 +21,7 @@ export const createWorker = () => {
 }
 
 const findEmployee = (role, task) => {
-  const employee = employees.find((emp) => emp.role.includes(role) && !emp.currentActivity)
+  const employee = [...employees].find((emp) => emp.role.includes(role) && !emp.currentActivity)
   if (!employee && !taskQueues[role].find((t) => t.id === task.id)) {
     taskQueues[role].push(task)
     return null
@@ -45,29 +45,28 @@ const isSprintDone = () => {
   return allStoriesCompleted && allEmployeesAvailable && allQueuesEmpty
 }
 
-const updateSprintActivities = (updatedItem) => {
+const updateSprintActivities = (updatedItem, sprint) => {
   if (updatedItem.type === 'Стори') {
-    const storyIndex = sprint.stories.findIndex((s) => s.id === updatedItem.id)
-    if (storyIndex !== -1) {
-      sprint.stories[storyIndex] = { ...sprint.stories[storyIndex], ...updatedItem }
-    }
-    return
+    const updatedStories = sprint.stories.map((story) => (story.id === updatedItem.id ? { ...story, ...updatedItem } : story))
+    return { ...sprint, stories: updatedStories }
   }
 
   const story = sprint.stories.find((story) => story.id === updatedItem.storyId)
-  if (!story) return
+  if (!story) return sprint
 
   if (updatedItem.type === 'Задача') {
-    const issueIndex = story.issues.findIndex((issue) => issue.id === updatedItem.id)
-    if (issueIndex !== -1) {
-      story.issues[issueIndex] = { ...story.issues[issueIndex], ...updatedItem }
-    }
-  } else if (updatedItem.type === 'Баг') {
-    const bugIndex = story.bugs?.findIndex((bug) => bug.id === updatedItem.id)
-    if (bugIndex !== -1) {
-      story.bugs[bugIndex] = { ...story.bugs[bugIndex], ...updatedItem }
-    }
+    const updatedIssues = story.issues.map((issue) => (issue.id === updatedItem.id ? { ...issue, ...updatedItem } : issue))
+    const updatedStories = sprint.stories.map((s) => (s.id === story.id ? { ...s, issues: updatedIssues } : s))
+    return { ...sprint, stories: updatedStories }
   }
+
+  if (updatedItem.type === 'Баг') {
+    const updatedBugs = story.bugs?.map((bug) => (bug.id === updatedItem.id ? { ...bug, ...updatedItem } : bug)) || []
+    const updatedStories = sprint.stories.map((s) => (s.id === story.id ? { ...s, bugs: updatedBugs } : s))
+    return { ...sprint, stories: updatedStories }
+  }
+
+  return sprint
 }
 
 const performTask = (employee, task, role) => {
@@ -89,7 +88,7 @@ const performTask = (employee, task, role) => {
 
 const handleTaskCompletion = (employee, task) => {
   employee.currentActivity = null
-  updateSprintActivities(task)
+  sprint = updateSprintActivities(task, sprint)
 
   if (task.status !== 'В процессе') {
     employee.completedActivities.unshift({ ...task })

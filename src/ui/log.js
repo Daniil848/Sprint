@@ -10,14 +10,19 @@ const renderLogs = () => {
     const li = document.createElement('li')
     li.classList.add('log')
 
-    if (log.status === 'Успех') {
-      li.classList.add('log-green')
-    } else if (log.status === 'На Доработку') {
-      li.classList.add('log-red')
-    } else if (log.status === 'В процессе') {
-      li.classList.add('log-yellow')
-    } else {
-      li.classList.add('log-blue')
+    switch (log.status) {
+      case 'Успех':
+        li.classList.add('log-green')
+        break
+      case 'На Доработку':
+        li.classList.add('log-red')
+        break
+      case 'В процессе':
+        li.classList.add('log-yellow')
+        break
+      default:
+        li.classList.add('log-blue')
+        break
     }
 
     li.innerText = log.text

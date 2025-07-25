@@ -5,12 +5,18 @@ import store from '../store/store'
 employeesWorker.postMessage({ message: 'initEmployees' })
 
 employeesWorker.onmessage = (e) => {
-  if (e.data.message === 'updateEmployees') {
-    store.dispatch(updateEmployees(e.data.employees))
-  } else if (e.data.message === 'sprintDone') {
-    sprintsWorker.postMessage({ message: 'updateSprint', sprint: e.data.sprint })
-  } else if (e.data.message === 'updateLogs') {
-    store.dispatch(updateLogs(e.data.log))
+  switch (e.data.message) {
+    case 'updateEmployees':
+      store.dispatch(updateEmployees(e.data.employees))
+      break
+    case 'sprintDone':
+      sprintsWorker.postMessage({ message: 'updateSprint', sprint: e.data.sprint })
+      break
+    case 'updateLogs':
+      store.dispatch(updateLogs(e.data.log))
+      break
+    default:
+      break
   }
 }
 
